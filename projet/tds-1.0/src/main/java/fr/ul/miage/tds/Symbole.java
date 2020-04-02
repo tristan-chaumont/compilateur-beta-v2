@@ -58,6 +58,7 @@ public class Symbole {
 	public Symbole() {
 		prop = new Properties();
 	}
+	
 	public Symbole(String nom, String cat, String scope) {
 		prop = new Properties();
 		prop.put(PROP_NOM, nom);
@@ -91,7 +92,7 @@ public class Symbole {
 	 * fournit la valeur d'une variable globale
 	 * @return
 	 */
-	public int get_valeur() {
+	public int getValeur() {
 		int res = 0; 
 		try {
 			res = Integer.parseInt(prop.getProperty(PROP_VALEUR));
@@ -104,7 +105,7 @@ public class Symbole {
 	 * fournit le rang d'un paramètre ou d'une variable locale d'une variable globale
 	 * @return
 	 */
-	public int get_rang() {
+	public int getRang() {
 		int res = 0; 
 		try {
 			res = Integer.parseInt(prop.getProperty(PROP_RANG));
@@ -117,7 +118,7 @@ public class Symbole {
 	 * fournit le nombre de paramètres d'une fonction
 	 * @return
 	 */
-	public int get_nbparam() {
+	public int getNbParam() {
 		int res = 0; 
 		try {
 			res = Integer.parseInt(prop.getProperty(PROP_NBPARAM));
@@ -130,7 +131,7 @@ public class Symbole {
 	 * fournit le nombre de variables locales d'une fonction
 	 * @return
 	 */
-	public int get_nbloc() {
+	public int getNBloc() {
 		int res = 0; 
 		try {
 			res = Integer.parseInt(prop.getProperty(PROP_NBLOC));
@@ -139,11 +140,15 @@ public class Symbole {
 		}
 		return res;
 	}
+	
+	public String getType() {
+		return prop.getProperty(prop.getProperty(PROP_TYPE));
+	}
 	/**
 	 * met à jour la valeur d'une variable globale
 	 * @return
 	 */
-	public Symbole set_valeur(int v) {
+	public Symbole setValeur(int v) {
 		prop.put(PROP_VALEUR, String.valueOf(v));
 		return this;
 	}
@@ -151,7 +156,7 @@ public class Symbole {
 	 * met à jour le rang d'une variable locale ou celui d'un paramètre
 	 * @return
 	 */
-	public Symbole set_rang(int v) {
+	public Symbole setRang(int v) {
 		prop.put(PROP_RANG, String.valueOf(v));
 		return this;
 	}
@@ -159,7 +164,7 @@ public class Symbole {
 	 * met à jour le nombre de paramètres d'une fonction
 	 * @return
 	 */
-	public Symbole set_nbparam(int v) {
+	public Symbole setNbParam(int v) {
 		prop.put(PROP_NBPARAM, String.valueOf(v));
 		return this;
 	}
@@ -167,10 +172,16 @@ public class Symbole {
 	 * met à jour le nombre de variables locales d'une fonction
 	 * @return
 	 */
-	public Symbole set_nbloc(int v) {
+	public Symbole setNBloc(int v) {
 		prop.put(PROP_NBLOC, String.valueOf(v));
 		return this;
 	}
+	
+	public Symbole setType(String v) {
+		prop.put(PROP_TYPE, v);
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		return prop.toString();
