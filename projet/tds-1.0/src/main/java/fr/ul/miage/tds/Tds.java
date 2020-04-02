@@ -109,5 +109,9 @@ public class Tds {
 		res.append("------------------ \n");
 		return res.toString();
 	}
+	
+	public Map<String, List<Symbole>> getTds() {
+		return table;
+	}
 
 }
