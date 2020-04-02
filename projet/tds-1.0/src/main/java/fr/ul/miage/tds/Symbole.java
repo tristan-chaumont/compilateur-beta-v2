@@ -58,6 +58,7 @@ public class Symbole {
 	public Symbole() {
 		prop = new Properties();
 	}
+	
 	public Symbole(String nom, String cat, String scope) {
 		prop = new Properties();
 		prop.put(PROP_NOM, nom);
@@ -139,6 +140,10 @@ public class Symbole {
 		}
 		return res;
 	}
+	
+	public String get_type() {
+		return prop.getProperty(prop.getProperty(PROP_TYPE));
+	}
 	/**
 	 * met à jour la valeur d'une variable globale
 	 * @return
@@ -171,6 +176,12 @@ public class Symbole {
 		prop.put(PROP_NBLOC, String.valueOf(v));
 		return this;
 	}
+	
+	public Symbole set_type(String v) {
+		prop.put(PROP_TYPE, v);
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		return prop.toString();
