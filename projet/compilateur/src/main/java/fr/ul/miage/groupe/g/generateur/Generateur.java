@@ -1,6 +1,7 @@
 package fr.ul.miage.groupe.g.generateur;
 
 import fr.ul.miage.arbre.Noeud;
+import fr.ul.miage.arbre.Noeud.Categories;
 import fr.ul.miage.groupe.g.main.StringBuilderPlus;
 import fr.ul.miage.tds.Tds;
 
@@ -19,5 +20,29 @@ public class Generateur {
 		builder.appendLineTab("CALL(main)");
 		builder.appendLineTab("HALT");
 		builder.appendLine("pile:");
+	}
+	
+	public String genererCode(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus("",true);
+		for(Noeud n :  noeud.getFils()) {
+			if (n.getCat().equals(Categories.FONCTION)){
+				builder.appendLine(genererFonction(n));
+			}
+		}
+		return builder.toString();
+		
+	}
+	
+	public String genererFonction(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus("",true);
+		for(Noeud n :  noeud.getFils()) {
+			builder.appendLine(genererExpression(n));
+		
+		}
+		return builder.toString();
+	}
+	
+	public String genererExpression(Noeud noeud) {
+		
 	}
 }
