@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import fr.ul.miage.arbre.Noeud;
+import fr.ul.miage.arbre.Noeud.Categories;
 import fr.ul.miage.groupe.g.main.StringBuilderPlus;
 import fr.ul.miage.tds.Tds;
 import fr.ul.miage.tds.Symbole;
@@ -27,12 +28,14 @@ public class Generateur {
 		builder.appendLine(".options tty");
 		builder.appendLine("");
 		builder.appendLine("CMOVE(pile, SP)");
+		builder.appendLine("BR(debut)");
 		builder.appendLine(genererData(tds));
 		builder.appendLine(genererCode(noeud));
 		builder.appendLine("debut:");
 		builder.appendLineTab("CALL(main)");
 		builder.appendLineTab("HALT");
 		builder.appendLine("pile:");
+		return builder.toString();
 	}
 	
 	/**
@@ -48,8 +51,43 @@ public class Generateur {
 			int init = 0;
 			List<Symbole> listeVariables = variable.getValue();
 			for (Symbole symbole: listeVariables) {
-				if (symbole.getType().equals(TYPE_ENTIER) && symbole.getScope())
+				if (symbole.getType().equals(TYPE_ENTIER) && symbole.getScope().equals(SCOPE_GLOBAL)) {
+					if (symbole.getValeur()) {
+						// TODO: Si la valeur existe
+						init = symbole.getValeur();
+					}
+					builder.append(variable);
+					builder.append(": LONG(");
+					builder.append(init);
+					builder.append(")");
+				}
 			}
 		}
+		return builder.toString();
+	}
+	
+	public String genererCode(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus();
+		for (Noeud n: noeud.getFils()) {
+			if (n.getCat().equals(Categories.FONCTION)){
+				builder.appendLine(genererFonction(n));
+			}
+		}
+		return builder.toString();
+		
+	}
+	
+	public String genererFonction(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus();
+		for (Noeud n: noeud.getFils()) {
+			builder.appendLine(genererExpression(n));
+		
+		}
+		return builder.toString();
+	}
+	
+	public String genererExpression(Noeud noeud) {
+		// TODO
+		return null;
 	}
 }

@@ -35,7 +35,7 @@ public class Main {
 		// remplissage
 		try {
 			Symbole s = tds.ajouter("x", Symbole.CAT_GLOBAL, Symbole.SCOPE_GLOBAL);
-			s.set_valeur(2020);
+			s.setValeur(2020);
 		} catch (Exception e) {
 			LOG.warning(e.getMessage());
 		}
@@ -51,32 +51,32 @@ public class Main {
 		}
 		try {
 			Symbole s = tds.ajouter("f", Symbole.CAT_FONCTION, Symbole.SCOPE_GLOBAL);
-			s.set_nbparam(1);
-			s.set_nbloc(3);
+			s.setNbParam(1);
+			s.setNBloc(3);
 		} catch (Exception e) {
 			LOG.warning(e.getMessage());
 		}
 		try {
 			Symbole s = tds.ajouter("a", Symbole.CAT_PARAMETRE, "f");
-			s.set_rang(0);
+			s.setRang(0);
 		} catch (Exception e) {
 			LOG.warning(e.getMessage());
 		}
 		try {
 			Symbole s = tds.ajouter("b", Symbole.CAT_LOCAL, "f");
-			s.set_rang(0);
+			s.setRang(0);
 		} catch (Exception e) {
 			LOG.warning(e.getMessage());
 		}
 		try {
 			Symbole s = tds.ajouter("c", Symbole.CAT_LOCAL, "f");
-			s.set_rang(1);
+			s.setRang(1);
 		} catch (Exception e) {
 			LOG.warning(e.getMessage());
 		}
 		try {
 			Symbole s = tds.ajouter("x", Symbole.CAT_LOCAL, "f");
-			s.set_rang(2);
+			s.setRang(2);
 		} catch (Exception e) {
 			LOG.warning(e.getMessage());
 		}
