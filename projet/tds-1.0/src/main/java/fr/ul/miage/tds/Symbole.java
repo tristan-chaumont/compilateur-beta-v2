@@ -182,6 +182,10 @@ public class Symbole {
 		return this;
 	}
 	
+	public Properties getProp() {
+		return prop;
+	}
+	
 	@Override
 	public String toString() {
 		return prop.toString();
