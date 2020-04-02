@@ -1,0 +1,8 @@
+programme nom {
+	entier i = 10;
+	entier j = 20;
+	func void main() {
+		i = lire() ;
+		ecrire(i + j);
+	}
+}

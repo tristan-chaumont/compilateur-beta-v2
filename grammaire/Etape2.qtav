@@ -1,0 +1,9 @@
+programme nom {
+	entier i = 10;
+	entier j = 20;
+	entier k;
+	entier l;
+	func void main() {
+		
+	}
+}

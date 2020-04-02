@@ -1,0 +1,16 @@
+programme nom{
+	entier a = 10;
+	
+	func void f(entier i){
+		entier x;
+		entier y;
+		x = 1;
+		y = 1;
+		a = i + x + y;
+	}
+
+	func void main() {
+		f(3);
+		ecrire(a);
+	}
+}

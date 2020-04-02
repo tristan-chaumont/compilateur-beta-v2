@@ -1,0 +1,12 @@
+programme nom {
+	entier i;
+	func void main() {
+		i = lire() ;
+		si(i < 10){
+			écrire(1);
+		}
+		sinon{
+			écrire(2);
+		}
+	}
+}

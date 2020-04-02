@@ -1,0 +1,11 @@
+programme nom {
+	entier i;
+	entier n = 5;
+	func void main() {
+		i = 0;
+		tantque (i<n){
+			ecrire(i);
+			i = i + 1;
+		}
+	}
+}

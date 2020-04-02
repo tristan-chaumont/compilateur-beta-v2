@@ -1,0 +1,14 @@
+programme nom{
+	entier a;
+	
+	func entier f(entier i, entier j){
+		entier x = i + j;
+		retourne x + 10;
+	}
+
+	func void main() {
+		a = f(1,2);
+		ecrire(a);
+	}
+}
+
