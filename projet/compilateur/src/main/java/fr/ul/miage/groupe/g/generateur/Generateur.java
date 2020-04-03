@@ -152,6 +152,21 @@ public class Generateur {
 	}
 	
 	/**
+	 * Génère un bloc d'instruction.
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
+	public String genererBloc(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus();
+		for (Noeud n: noeud.getFils()) {
+			builder.appendLine(genererInstruction(n));
+		}
+		return builder.toString();
+	}
+	
+	/**
 	 * Génère une instruction (affectation, ecrire, lire, ).
 	 * @param noeud
 	 * 		Arbre abstrait.
@@ -184,6 +199,20 @@ public class Generateur {
 		StringBuilderPlus builder = new StringBuilderPlus(genererExpression(noeud.getFils().get(1)), true);
 		builder.appendLine("POP(r0)");
 		builder.appendLine(String.format("ST(r0, %s)", noeud.getFils().get(0).toString()));
+		return builder.toString();
+	}
+	
+	/**
+	 * Génère une écriture.
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
+	public String genererEcrire(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus(genererExpression(noeud.getFils().get(0)), true);
+		builder.appendLine("POP(r0)");
+		builder.appendLine("WRINT()");
 		return builder.toString();
 	}
 }
