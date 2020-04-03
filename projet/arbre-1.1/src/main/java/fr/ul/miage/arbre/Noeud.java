@@ -35,7 +35,7 @@ public abstract class Noeud {
 	//les catégories de noeuds possibles
 	public static enum Categories {
 			PROG, FONCTION, BLOC,
-			AFF, SI,  TQ, ECR, RET,
+			AFF, SI, TQ, ECR, RET,
 			PLUS, MOINS, DIV, MUL,
 			SUP, INF, SUPE, INFE, EG, DIF,
 			IDF, CONST, LIRE, APPEL
