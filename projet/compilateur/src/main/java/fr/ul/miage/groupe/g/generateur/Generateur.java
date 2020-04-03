@@ -182,6 +182,9 @@ public class Generateur {
 			case ECR:
 				builder.appendLine(genererEcrire(noeud));
 				break;
+			case LIRE:
+				builder.appendLine(genererLire(noeud));
+				break;
 			default:
 				break;
 		}
@@ -214,5 +217,15 @@ public class Generateur {
 		builder.appendLine("POP(r0)");
 		builder.appendLine("WRINT()");
 		return builder.toString();
+	}
+	
+	public String genererLire(Noeud noeud) {
+		//TODO
+		return null;
+	}
+	
+	public String genererSi(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus(genererExpressionBooleenne(noeud.getFils().get(0)), true);
+		builder.appendLine(t);
 	}
 }
