@@ -52,20 +52,23 @@ public class Generateur {
 			List<Symbole> listeVariables = variable.getValue();
 			for (Symbole symbole: listeVariables) {
 				if (symbole.getType().equals(TYPE_ENTIER) && symbole.getScope().equals(SCOPE_GLOBAL)) {
-					if (symbole.getValeur()) {
-						// TODO: Si la valeur existe
+					if (symbole.getProp().contains(PROP_VALEUR)) {
 						init = symbole.getValeur();
 					}
-					builder.append(variable);
-					builder.append(": LONG(");
-					builder.append(init);
-					builder.append(")");
+					builder.appendLine(String.format("%s: LONG(%d)", variable.getKey(), init));
 				}
 			}
 		}
 		return builder.toString();
 	}
 	
+	/**
+	 * Génère les blocs de code du programme.
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
 	public String genererCode(Noeud noeud) {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		for (Noeud n: noeud.getFils()) {
@@ -74,9 +77,15 @@ public class Generateur {
 			}
 		}
 		return builder.toString();
-		
 	}
 	
+	/**
+	 * Génère la fonction du code.
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
 	public String genererFonction(Noeud noeud) {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		for (Noeud n: noeud.getFils()) {
@@ -86,8 +95,95 @@ public class Generateur {
 		return builder.toString();
 	}
 	
+	/**
+	 * Génère une expression (addition, soustraction, multiplication, division, constante, identificateur).
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
 	public String genererExpression(Noeud noeud) {
-		// TODO
-		return null;
+		StringBuilderPlus builder = new StringBuilderPlus();
+		switch (noeud.getCat()) {
+			case CONST:
+				builder.appendLine(String.format("CMOVE(%s, r0)", noeud.toString()));
+				builder.appendLine("PUSH(r0)");
+				break;
+			case IDF:
+				builder.appendLine(String.format("LD(%s, r0)", noeud.toString()));
+				builder.appendLine("PUSH(r0)");
+				break;
+			case PLUS:
+				builder.appendLine(genererExpression(noeud.getFils().get(0)));
+				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.appendLine("POP(r2)");
+				builder.appendLine("POP(r1)");
+				builder.appendLine("ADD(r1, r2, r3)");
+				builder.appendLine("PUSH(r3)");
+				break;
+			case MOINS:
+				builder.appendLine(genererExpression(noeud.getFils().get(0)));
+				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.appendLine("POP(r2)");
+				builder.appendLine("POP(r1)");
+				builder.appendLine("SUB(r1, r2, r3)");
+				builder.appendLine("PUSH(r3)");
+				break;
+			case MUL:
+				builder.appendLine(genererExpression(noeud.getFils().get(0)));
+				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.appendLine("POP(r2)");
+				builder.appendLine("POP(r1)");
+				builder.appendLine("MUL(r1, r2, r3)");
+				builder.appendLine("PUSH(r3)");
+				break;
+			case DIV:
+				builder.appendLine(genererExpression(noeud.getFils().get(0)));
+				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.appendLine("POP(r2)");
+				builder.appendLine("POP(r1)");
+				builder.appendLine("DIV(r1, r2, r3)");
+				builder.appendLine("PUSH(r3)");
+				break;
+			default:
+				break;
+		}
+		return builder.toString();
+	}
+	
+	/**
+	 * Génère une instruction (affectation, ecrire, lire, ).
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
+	public String genererInstruction(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus();
+		switch (noeud.getCat()) {
+			case EG:
+				builder.appendLine(genererAffectation(noeud));
+				break;
+			case ECR:
+				builder.appendLine(genererEcrire(noeud));
+				break;
+			default:
+				break;
+		}
+		return builder.toString();
+	}
+	
+	/**
+	 * Génère une affectation.
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
+	public String genererAffectation(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus(genererExpression(noeud.getFils().get(1)), true);
+		builder.appendLine("POP(r0)");
+		builder.appendLine(String.format("ST(r0, %s)", noeud.getFils().get(0).toString()));
+		return builder.toString();
 	}
 }
