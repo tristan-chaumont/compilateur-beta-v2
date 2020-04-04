@@ -23,7 +23,8 @@ public class Generateur {
 	 */
 	public String genererProgramme(Noeud noeud, Tds tds) {
 		// true spécifie qu'on saute une ligne après l'insertion du String
-		StringBuilderPlus builder = new StringBuilderPlus(".include beta.uasm", true);
+		StringBuilderPlus builder = new StringBuilderPlus();
+		builder.appendLine(".include beta.uasm");
 		builder.appendLine(".include intio.uasm");
 		builder.appendLine(".options tty");
 		builder.appendLine("");
@@ -63,7 +64,7 @@ public class Generateur {
 	}
 	
 	/**
-	 * Génère tous les blocs d'instructions du programme.
+	 * Génère toutes les fonctions du code.
 	 * @param noeud
 	 * 		Arbre abstrait.
 	 * @return
@@ -80,7 +81,7 @@ public class Generateur {
 	}
 	
 	/**
-	 * Génère la fonction du code.
+	 * Génère tous les blocs d'une fonction
 	 * @param noeud
 	 * 		Arbre abstrait.
 	 * @return
@@ -96,7 +97,7 @@ public class Generateur {
 	}
 	
 	/**
-	 * Génère un bloc d'instruction.
+	 * Génère toutes les instructions d'un bloc.
 	 * @param noeud
 	 * 		Arbre abstrait.
 	 * @return
@@ -142,7 +143,7 @@ public class Generateur {
 	}
 	
 	/**
-	 * Génère une expression (addition, soustraction, multiplication, division, constante, identificateur).
+	 * Génère une expression (addition, soustraction, multiplication, division, constante, identificateur, lecture).
 	 * @param noeud
 	 * 		Arbre abstrait.
 	 * @return
@@ -274,7 +275,8 @@ public class Generateur {
 	 * 		Le code asm.
 	 */
 	public String genererAffectation(Noeud noeud) {
-		StringBuilderPlus builder = new StringBuilderPlus(genererExpression(noeud.getFils().get(1)), true);
+		StringBuilderPlus builder = new StringBuilderPlus();
+		builder.appendLine(genererExpression(noeud.getFils().get(1)));
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab(String.format("ST(r0, %s)", noeud.getFils().get(0).toString()));
 		return builder.toString();
@@ -288,7 +290,8 @@ public class Generateur {
 	 * 		Le code asm.
 	 */
 	public String genererEcrire(Noeud noeud) {
-		StringBuilderPlus builder = new StringBuilderPlus(genererExpression(noeud.getFils().get(0)), true);
+		StringBuilderPlus builder = new StringBuilderPlus();
+		builder.appendLine(genererExpression(noeud.getFils().get(0)));
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab("WRINT()");
 		return builder.toString();
@@ -302,14 +305,49 @@ public class Generateur {
 	 * 		Le code asm.
 	 */
 	public String genererSi(Noeud noeud) {
-		StringBuilderPlus builder = new StringBuilderPlus(genererExpressionBooleenne(noeud.getFils().get(0)), true);
+		String numeroSi = noeud.toString();
+		StringBuilderPlus builder = new StringBuilderPlus();
+		builder.appendLine(genererExpressionBooleenne(noeud.getFils().get(0)));
 		builder.appendLineTab("POP(r0)");
-		builder.appendLineTab("BF(r0, sinon)");
+		builder.appendLineTab(String.format("BF(r0, sinon%s)", numeroSi));
 		builder.appendLine(genererBloc(noeud.getFils().get(1)));
-		builder.appendLineTab("JMP(fsi)");
-		builder.appendLineTab(String.format("sinon %s:", noeud.toString()));
+		builder.appendLineTab(String.format("JMP(fsi%s)", numeroSi));
+		builder.appendLine(String.format("sinon%s:", numeroSi));
 		builder.appendLine(genererBloc(noeud.getFils().get(2)));
-		builder.appendLineTab(String.format("fsi %s:", noeud.toString()));
+		builder.appendLine(String.format("fsi%s:", numeroSi));
+		return builder.toString();
+	}
+	
+	/**
+	 * Génère la condition "TANT QUE".
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
+	public String genererTantQue(Noeud noeud) {
+		String numeroTq = noeud.toString();
+		StringBuilderPlus builder = new StringBuilderPlus();
+		builder.appendLine(String.format("tantque%s:", numeroTq));
+		builder.appendLine(genererExpressionBooleenne(noeud.getFils().get(0)));
+		builder.appendLineTab("POP(r0)");
+		builder.appendLineTab(String.format("BF(r0, ftantque%s)", numeroTq));
+		builder.appendLine(genererBloc(noeud.getFils().get(1)));
+		builder.appendLineTab(String.format("JMP(tantque%s)", numeroTq));
+		builder.appendLineTab(String.format("ftantque%s:", numeroTq));
+		return builder.toString();
+	}
+	
+	/**
+	 * Génère un appel à une fonction.
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
+	public String genererAppel(Noeud noeud) {
+		StringBuilderPlus builder = new StringBuilderPlus();
+		//TODO
 		return builder.toString();
 	}
 }

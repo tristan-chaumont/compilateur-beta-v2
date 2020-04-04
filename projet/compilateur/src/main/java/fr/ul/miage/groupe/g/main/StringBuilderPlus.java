@@ -16,7 +16,7 @@ public class StringBuilderPlus {
      * @param lineSeparator
      * 		Booléen valant true s'il faut sauter une ligne ou non.
      */
-    public <T> StringBuilderPlus(T t, boolean lineSeparator) {
+    /*public <T> StringBuilderPlus(T t, boolean lineSeparator) {
     	if(lineSeparator) {
         	this.stringBuilder = new StringBuilder();
         	this.stringBuilder.append(t).append(System.lineSeparator());
@@ -24,7 +24,7 @@ public class StringBuilderPlus {
     		this.stringBuilder = new StringBuilder();
     		this.stringBuilder.append(t);
     	}
-    }
+    }*/
 
     public <T> StringBuilderPlus append(T t) {
         stringBuilder.append(t);
