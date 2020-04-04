@@ -52,7 +52,7 @@ public class Main {
 		try {
 			Symbole s = tds.ajouter("f", Symbole.CAT_FONCTION, Symbole.SCOPE_GLOBAL);
 			s.setNbParam(1);
-			s.setNBloc(3);
+			s.setNbLoc(3);
 		} catch (Exception e) {
 			LOG.warning(e.getMessage());
 		}

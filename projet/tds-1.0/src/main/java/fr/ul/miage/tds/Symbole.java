@@ -29,6 +29,7 @@ import java.util.logging.Logger;
  * @author azim roussanaly
  */
 public class Symbole {
+	
 	private static final Logger LOG = Logger.getLogger(Symbole.class.getName());
 	
 	//const
@@ -74,6 +75,7 @@ public class Symbole {
 	public String getNom() {
 		return prop.getProperty(PROP_NOM);
 	}
+	
 	/**
 	 * fournit le scope du symbole
 	 * @return
@@ -81,6 +83,7 @@ public class Symbole {
 	public String getScope() {
 		return prop.getProperty(PROP_SCOPE);
 	}
+	
 	/**
 	 * fournit la catégorie du symbole (global, local, param ou fonction)
 	 * @return
@@ -88,6 +91,7 @@ public class Symbole {
 	public String getCat() {
 		return prop.getProperty(PROP_CATEGORIE);
 	}
+	
 	/**
 	 * fournit la valeur d'une variable globale
 	 * @return
@@ -101,6 +105,7 @@ public class Symbole {
 		}
 		return res;
 	}
+	
 	/**
 	 * fournit le rang d'un paramètre ou d'une variable locale d'une variable globale
 	 * @return
@@ -114,6 +119,7 @@ public class Symbole {
 		}
 		return res;
 	}
+	
 	/**
 	 * fournit le nombre de paramètres d'une fonction
 	 * @return
@@ -127,11 +133,12 @@ public class Symbole {
 		}
 		return res;
 	}
+	
 	/**
 	 * fournit le nombre de variables locales d'une fonction
 	 * @return
 	 */
-	public int getNBloc() {
+	public int getNbLoc() {
 		int res = 0; 
 		try {
 			res = Integer.parseInt(prop.getProperty(PROP_NBLOC));
@@ -142,8 +149,13 @@ public class Symbole {
 	}
 	
 	public String getType() {
-		return prop.getProperty(prop.getProperty(PROP_TYPE));
+		return prop.getProperty(PROP_TYPE);
 	}
+	
+	public Properties getProp() {
+		return prop;
+	}
+	
 	/**
 	 * met à jour la valeur d'une variable globale
 	 * @return
@@ -172,18 +184,18 @@ public class Symbole {
 	 * met à jour le nombre de variables locales d'une fonction
 	 * @return
 	 */
-	public Symbole setNBloc(int v) {
+	public Symbole setNbLoc(int v) {
 		prop.put(PROP_NBLOC, String.valueOf(v));
 		return this;
 	}
 	
+	/**
+	 * met à jour le type du symbole
+	 * @return
+	 */
 	public Symbole setType(String v) {
 		prop.put(PROP_TYPE, v);
 		return this;
-	}
-	
-	public Properties getProp() {
-		return prop;
 	}
 	
 	@Override
