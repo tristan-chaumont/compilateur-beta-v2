@@ -96,7 +96,7 @@ public class Generateur {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		builder.appendLine(String.format("%s:", noeudObj.getValeur()));
 		builder.appendLine(genererBloc(noeud));
-		builder.appendLineTab("RTN()");
+		builder.appendLineTab("RTN²()");
 		return builder.toString();
 	}
 	
@@ -351,7 +351,7 @@ public class Generateur {
 	 */
 	private String genererAppel(Noeud noeud) {
 		StringBuilderPlus builder = new StringBuilderPlus();
-		//TODO
+		
 		return builder.toString();
 	}
 }
