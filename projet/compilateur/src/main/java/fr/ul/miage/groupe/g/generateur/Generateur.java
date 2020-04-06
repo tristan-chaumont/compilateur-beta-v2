@@ -104,8 +104,8 @@ public class Generateur {
 		builder.appendLineTab(String.format("ALLOCATE(%d)", tds.rechercher((String) fonction.getValeur(), SCOPE_GLOBAL).getNbLoc()));
 		builder.append(genererBloc((Bloc) fonction.getFils().get(0)));
 		builder.appendLineTab("MOVE(BP, SP)");
-		builder.appendLineTab("PUSH(BP)");
-		builder.appendLineTab("PUSH(LP)");
+		builder.appendLineTab("POP(BP)");
+		builder.appendLineTab("POP(LP)");
 		builder.appendLineTab("RTN()");
 		return builder.toString();
 	}
@@ -170,7 +170,7 @@ public class Generateur {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		switch (noeud.getCat()) {
 			case CONST:
-				builder.appendLineTab(String.format("CMOVE(%s, r0)", ((NoeudInt) noeud).getValeur()));
+				builder.appendLineTab(String.format("CMOVE(%d, r0)", ((Const) noeud).getValeur()));
 				builder.appendLineTab("PUSH(r0)");
 				break;
 			case IDF:
@@ -364,7 +364,7 @@ public class Generateur {
 		builder.appendLineTab(String.format("BF(r0, ftantque%d)", numeroTq));
 		builder.append(genererBloc(tantque.getBloc()));
 		builder.appendLineTab(String.format("JMP(tantque%d)", numeroTq));
-		builder.appendLineTab(String.format("ftantque%d:", numeroTq));
+		builder.appendLine(String.format("ftantque%d:", numeroTq));
 		return builder.toString();
 	}
 	
@@ -378,7 +378,8 @@ public class Generateur {
 	private String genererAppel(Appel appel) {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		Symbole symbole = tds.rechercher((String) ((Fonction) appel.getValeur()).getValeur(), SCOPE_GLOBAL);
-		builder.appendLineTab(String.format("ALLOCATE(%d)", symbole.getNbParam()));
+		if (symbole.getType().equals(TYPE_ENTIER))
+			builder.appendLineTab("ALLOCATE(1)");
 		for (Noeud parametres: appel.getFils()) {
 			builder.append(genererExpression(parametres));
 			builder.appendLineTab("POP(r1)");
@@ -396,7 +397,7 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	public String genererRetourne(Retour retour) {
+	private String genererRetourne(Retour retour) {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		builder.append(genererExpression(retour.getLeFils()));
 		builder.appendLineTab("POP(r0)");

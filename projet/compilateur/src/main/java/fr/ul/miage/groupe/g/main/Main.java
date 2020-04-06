@@ -28,6 +28,24 @@ public class Main {
 		arbre = etape.genererArbreEtape3();
 		tds = etape.genererTdsEtape3();
 		generateur = new Generateur(tds);
+		//System.out.println(generateur.genererProgramme(arbre));
+		
+		// ETAPE 4
+		arbre = etape.genererArbreEtape4();
+		tds = etape.genererTdsEtape4();
+		generateur = new Generateur(tds);
+		//System.out.println(generateur.genererProgramme(arbre));
+		
+		// ETAPE 5
+		arbre = etape.genererArbreEtape5();
+		tds = etape.genererTdsEtape5();
+		generateur = new Generateur(tds);
+		//System.out.println(generateur.genererProgramme(arbre));
+		
+		// ETAPE 6
+		arbre = etape.genererArbreEtape6();
+		tds = etape.genererTdsEtape6();
+		generateur = new Generateur(tds);
 		System.out.println(generateur.genererProgramme(arbre));
 	}
 }
