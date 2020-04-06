@@ -96,7 +96,7 @@ public class Generateur {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		builder.appendLine(String.format("%s:", noeudObj.getValeur()));
 		builder.appendLine(genererBloc(noeud));
-		builder.appendLineTab("RTN²()");
+		builder.appendLineTab("RTN()");
 		return builder.toString();
 	}
 	
