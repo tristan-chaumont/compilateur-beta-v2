@@ -3,16 +3,20 @@ package fr.ul.miage.groupe.g.generateur;
 import java.util.List;
 import java.util.Map;
 
-import fr.ul.miage.arbre.Noeud;
+import fr.ul.miage.arbre.*;
 import fr.ul.miage.arbre.Noeud.Categories;
-import fr.ul.miage.arbre.NoeudObj;
-import fr.ul.miage.arbre.NoeudInt;
 import fr.ul.miage.groupe.g.main.StringBuilderPlus;
 import fr.ul.miage.tds.Tds;
 import fr.ul.miage.tds.Symbole;
 import static fr.ul.miage.tds.Symbole.*;
 
 public class Generateur {
+	
+	private Tds tds;
+	
+	public Generateur(Tds tds) {
+		this.tds = tds;
+	}
 
 	/**
 	 * Génère la base du programme avec les include, le call à la fonction main, ainsi que la pile.
@@ -23,7 +27,7 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	public String genererProgramme(Noeud noeud, Tds tds) {
+	public String genererProgramme(Noeud noeud) {
 		// true spécifie qu'on saute une ligne après l'insertion du String
 		StringBuilderPlus builder = new StringBuilderPlus();
 		builder.appendLine(".include beta.uasm");
@@ -33,8 +37,8 @@ public class Generateur {
 		builder.appendLine("CMOVE(pile, SP)");
 		builder.appendLine("BR(debut)");
 		builder.appendLine(""); // SAUT DE LIGNE
-		builder.appendLine(genererData(tds));
-		builder.appendLine(genererCode(noeud, tds));
+		builder.appendLine(genererData());
+		builder.appendLine(genererCode(noeud));
 		builder.appendLine("debut:");
 		builder.appendLineTab("CALL(main)");
 		builder.appendLineTab("HALT()");
@@ -50,7 +54,7 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererData(Tds tds) {
+	private String genererData() {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		for (Map.Entry<String, List<Symbole>> variable: tds.getTds().entrySet()) {
 			int init = 0;
@@ -74,11 +78,11 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererCode(Noeud noeud, Tds tds) {
+	private String genererCode(Noeud noeud) {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		for (Noeud n: noeud.getFils()) {
 			if (n.getCat().equals(Categories.FONCTION)){
-				builder.append(genererFonction(n, tds));
+				builder.append(genererFonction((Fonction) n));
 			}
 		}
 		return builder.toString();
@@ -91,15 +95,17 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererFonction(Noeud noeud, Tds tds) {
-		NoeudObj noeudObj = (NoeudObj) noeud;
+	private String genererFonction(Fonction fonction) {
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.appendLine(String.format("%s:", noeudObj.getValeur()));
+		builder.appendLine(String.format("%s:", fonction.getValeur()));
 		builder.appendLineTab("PUSH(LP)");
 		builder.appendLineTab("PUSH(BP)");
 		builder.appendLineTab("MOVE(SP, BP)");
-		builder.appendLineTab(String.format("ALLOCATE(%s)", noeudObj.getFils().size()));
-		builder.append(genererBloc(noeud));
+		builder.appendLineTab(String.format("ALLOCATE(%d)", tds.rechercher((String) fonction.getValeur(), SCOPE_GLOBAL).getNbLoc()));
+		builder.append(genererBloc((Bloc) fonction.getFils().get(0)));
+		builder.appendLineTab("MOVE(BP, SP)");
+		builder.appendLineTab("PUSH(BP)");
+		builder.appendLineTab("PUSH(LP)");
 		builder.appendLineTab("RTN()");
 		return builder.toString();
 	}
@@ -111,9 +117,9 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererBloc(Noeud noeud) {
+	private String genererBloc(Bloc bloc) {
 		StringBuilderPlus builder = new StringBuilderPlus();
-		for (Noeud n: noeud.getFils()) {
+		for (Noeud n: bloc.getFils()) {
 			builder.append(genererInstruction(n));
 		}
 		return builder.toString();
@@ -130,19 +136,22 @@ public class Generateur {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		switch (noeud.getCat()) {
 			case AFF:
-				builder.append(genererAffectation(noeud));
+				builder.append(genererAffectation((Affectation) noeud));
 				break;
 			case ECR:
-				builder.append(genererEcrire(noeud));
+				builder.append(genererEcrire((Ecrire) noeud));
 				break;
 			case SI:
-				builder.append(genererSi(noeud));
+				builder.append(genererSi((Si) noeud));
 				break;
 			case TQ:
-				builder.append(genererTantQue(noeud));
+				builder.append(genererTantQue((TantQue) noeud));
 				break;
 			case APPEL:
-				builder.append(genererAppel(noeud));
+				builder.append(genererAppel((Appel) noeud));
+				break;
+			case RET:
+				builder.append(genererRetourne((Retour) noeud));
 				break;
 			default:
 				break;
@@ -165,8 +174,21 @@ public class Generateur {
 				builder.appendLineTab("PUSH(r0)");
 				break;
 			case IDF:
-				builder.appendLineTab(String.format("LD(%s, r0)", ((NoeudObj) noeud).getValeur()));
-				builder.appendLineTab("PUSH(r0)");
+				Idf idf = (Idf) noeud;
+				Symbole symbole = tds.rechercher((String) idf.getValeur(), (String) (idf.getFonction() != null ? idf.getFonction().getValeur() : SCOPE_GLOBAL));
+				switch (symbole.getCat()) {
+					case CAT_GLOBAL:
+						builder.appendLineTab(String.format("LD(%s, r0)", ((NoeudObj) noeud).getValeur()));
+						builder.appendLineTab("PUSH(r0)");
+						break;
+					case CAT_LOCAL:
+						builder.appendLineTab("POP(r0)");
+						builder.appendLineTab(String.format("PUTFRAME(%s, r0)", ((NoeudObj) noeud).getValeur()));
+					case CAT_PARAMETRE:
+						builder.appendLineTab(String.format("GETFRAME(%s, r0)", - (symbole.getRang() + 2) * 4));
+						builder.appendLineTab("PUSH(r0)");
+						break;
+				}		
 				break;
 			case PLUS:
 				builder.append(genererExpression(noeud.getFils().get(0)));
@@ -282,11 +304,11 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererAffectation(Noeud noeud) {
+	private String genererAffectation(Affectation affectation) {
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.append(genererExpression(noeud.getFils().get(1)));
+		builder.append(genererExpression(affectation.getFilsDroit()));
 		builder.appendLineTab("POP(r0)");
-		builder.appendLineTab(String.format("ST(r0, %s)", ((NoeudObj) noeud.getFils().get(0)).getValeur()));
+		builder.appendLineTab(String.format("ST(r0, %s)", ((Idf) affectation.getFilsGauche()).getValeur()));
 		return builder.toString();
 	}
 	
@@ -297,9 +319,9 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererEcrire(Noeud noeud) {
+	private String genererEcrire(Ecrire ecrire) {
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.append(genererExpression(noeud.getFils().get(0)));
+		builder.append(genererExpression(ecrire.getLeFils()));
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab("WRINT()");
 		return builder.toString();
@@ -312,17 +334,17 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererSi(Noeud noeud) {
-		String numeroSi = noeud.toString();
+	private String genererSi(Si si) {
+		int numeroSi = si.getValeur();
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.append(genererExpressionBooleenne(noeud.getFils().get(0)));
+		builder.append(genererExpressionBooleenne(si.getCondition()));
 		builder.appendLineTab("POP(r0)");
-		builder.appendLineTab(String.format("BF(r0, sinon%s)", numeroSi));
-		builder.append(genererBloc(noeud.getFils().get(1)));
-		builder.appendLineTab(String.format("JMP(fsi%s)", numeroSi));
-		builder.appendLine(String.format("sinon%s:", numeroSi));
-		builder.append(genererBloc(noeud.getFils().get(2)));
-		builder.appendLine(String.format("fsi%s:", numeroSi));
+		builder.appendLineTab(String.format("BF(r0, sinon%d)", numeroSi));
+		builder.append(genererBloc(si.getBlocAlors()));
+		builder.appendLineTab(String.format("JMP(fsi%d)", numeroSi));
+		builder.appendLine(String.format("sinon%d:", numeroSi));
+		builder.append(genererBloc(si.getBlocSinon()));
+		builder.appendLine(String.format("fsi%d:", numeroSi));
 		return builder.toString();
 	}
 	
@@ -333,16 +355,16 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererTantQue(Noeud noeud) {
-		String numeroTq = noeud.toString();
+	private String genererTantQue(TantQue tantque) {
+		int numeroTq = tantque.getValeur();
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.appendLine(String.format("tantque%s:", numeroTq));
-		builder.append(genererExpressionBooleenne(noeud.getFils().get(0)));
+		builder.appendLine(String.format("tantque%d:", numeroTq));
+		builder.append(genererExpressionBooleenne(tantque.getCondition()));
 		builder.appendLineTab("POP(r0)");
-		builder.appendLineTab(String.format("BF(r0, ftantque%s)", numeroTq));
-		builder.append(genererBloc(noeud.getFils().get(1)));
-		builder.appendLineTab(String.format("JMP(tantque%s)", numeroTq));
-		builder.appendLineTab(String.format("ftantque%s:", numeroTq));
+		builder.appendLineTab(String.format("BF(r0, ftantque%d)", numeroTq));
+		builder.append(genererBloc(tantque.getBloc()));
+		builder.appendLineTab(String.format("JMP(tantque%d)", numeroTq));
+		builder.appendLineTab(String.format("ftantque%d:", numeroTq));
 		return builder.toString();
 	}
 	
@@ -353,10 +375,34 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererAppel(Noeud noeud) {
-		NoeudObj noeudObj = (NoeudObj) noeud;
+	private String genererAppel(Appel appel) {
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.appendLineTab(String.format("CALL(%s)", noeudObj.getValeur()));
+		Symbole symbole = tds.rechercher((String) ((Fonction) appel.getValeur()).getValeur(), SCOPE_GLOBAL);
+		builder.appendLineTab(String.format("ALLOCATE(%d)", symbole.getNbParam()));
+		for (Noeud parametres: appel.getFils()) {
+			builder.append(genererExpression(parametres));
+			builder.appendLineTab("POP(r1)");
+			builder.appendLineTab("CMOVE(r1, r0)");
+			builder.appendLineTab("PUSH(r0)");
+		}
+		builder.appendLineTab(String.format("CALL(%s, %d)", appel.getValeur(), symbole.getNbParam()));
+		return builder.toString();
+	}
+	
+	/**
+	 * Génère un retour de fonction.
+	 * @param noeud
+	 * 		Arbre abstrait.
+	 * @return
+	 * 		Le code asm.
+	 */
+	public String genererRetourne(Retour retour) {
+		StringBuilderPlus builder = new StringBuilderPlus();
+		builder.append(genererExpression(retour.getLeFils()));
+		builder.appendLineTab("POP(r0)");
+		Fonction fonction = (Fonction) retour.getValeur();
+		Symbole symbole = tds.rechercher((String) fonction.getValeur(), SCOPE_GLOBAL);
+		builder.appendLine(String.format("PUTFRAME(r0, %d)", (3 + symbole.getNbParam()) * (-4)));
 		return builder.toString();
 	}
 }

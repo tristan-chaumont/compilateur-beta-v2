@@ -8,23 +8,26 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Etape etape = new Etape();
-		Generateur generateur = new Generateur();
+		Generateur generateur;
 		
 		// ETAPE 1
 		Noeud arbre = etape.genererArbreEtape1();
 		Tds tds = etape.genererTdsEtape1();
+		generateur = new Generateur(tds);
 		//System.out.println(generateur.genererProgramme(arbre, tds));
 		
 		
 		// ETAPE 2
 		arbre = etape.genererArbreEtape2();
 		tds = etape.genererTdsEtape2();
+		generateur = new Generateur(tds);
 		//System.out.println(generateur.genererProgramme(arbre, tds));
 		
 		
 		// ETAPE 3
 		arbre = etape.genererArbreEtape3();
 		tds = etape.genererTdsEtape3();
-		System.out.println(generateur.genererProgramme(arbre, tds));
+		generateur = new Generateur(tds);
+		System.out.println(generateur.genererProgramme(arbre));
 	}
 }

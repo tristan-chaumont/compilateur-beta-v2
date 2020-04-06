@@ -26,10 +26,25 @@ package fr.ul.miage.arbre;
  * Created at 28 févr. 2019
  */
 public class Idf extends NoeudObj {
+	
+	private Fonction fonction;
+	
 	//constructeur
 	public Idf(Object valeur) {
 		setCat(Categories.IDF);
 		setValeur(valeur);
 		setFils(null); //feuille
+		this.fonction = null;
+	}
+	
+	public Idf(Object valeur, Fonction fonction) {
+		setCat(Categories.IDF);
+		setValeur(valeur);
+		setFils(null); //feuille
+		this.fonction = fonction;
+	}
+	
+	public Fonction getFonction() {
+		return fonction;
 	}
 }
