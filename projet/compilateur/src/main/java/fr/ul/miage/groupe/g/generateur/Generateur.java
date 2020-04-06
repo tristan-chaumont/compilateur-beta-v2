@@ -34,7 +34,7 @@ public class Generateur {
 		builder.appendLine("BR(debut)");
 		builder.appendLine(""); // SAUT DE LIGNE
 		builder.appendLine(genererData(tds));
-		builder.appendLine(genererCode(noeud));
+		builder.appendLine(genererCode(noeud, tds));
 		builder.appendLine("debut:");
 		builder.appendLineTab("CALL(main)");
 		builder.appendLineTab("HALT()");
@@ -74,11 +74,11 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererCode(Noeud noeud) {
+	private String genererCode(Noeud noeud, Tds tds) {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		for (Noeud n: noeud.getFils()) {
 			if (n.getCat().equals(Categories.FONCTION)){
-				builder.appendLine(genererFonction(n));
+				builder.append(genererFonction(n, tds));
 			}
 		}
 		return builder.toString();
@@ -91,11 +91,15 @@ public class Generateur {
 	 * @return
 	 * 		Le code asm.
 	 */
-	private String genererFonction(Noeud noeud) {
+	private String genererFonction(Noeud noeud, Tds tds) {
 		NoeudObj noeudObj = (NoeudObj) noeud;
 		StringBuilderPlus builder = new StringBuilderPlus();
 		builder.appendLine(String.format("%s:", noeudObj.getValeur()));
-		builder.appendLine(genererBloc(noeud));
+		builder.appendLineTab("PUSH(LP)");
+		builder.appendLineTab("PUSH(BP)");
+		builder.appendLineTab("MOVE(SP, BP)");
+		builder.appendLineTab(String.format("ALLOCATE(%s)", noeudObj.getFils().size()));
+		builder.append(genererBloc(noeud));
 		builder.appendLineTab("RTN()");
 		return builder.toString();
 	}
@@ -110,7 +114,7 @@ public class Generateur {
 	private String genererBloc(Noeud noeud) {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		for (Noeud n: noeud.getFils()) {
-			builder.appendLine(genererInstruction(n));
+			builder.append(genererInstruction(n));
 		}
 		return builder.toString();
 	}
@@ -126,19 +130,19 @@ public class Generateur {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		switch (noeud.getCat()) {
 			case AFF:
-				builder.appendLine(genererAffectation(noeud));
+				builder.append(genererAffectation(noeud));
 				break;
 			case ECR:
-				builder.appendLine(genererEcrire(noeud));
+				builder.append(genererEcrire(noeud));
 				break;
 			case SI:
-				builder.appendLine(genererSi(noeud));
+				builder.append(genererSi(noeud));
 				break;
 			case TQ:
-				builder.appendLine(genererTantQue(noeud));
+				builder.append(genererTantQue(noeud));
 				break;
 			case APPEL:
-				builder.appendLine(genererAppel(noeud));
+				builder.append(genererAppel(noeud));
 				break;
 			default:
 				break;
@@ -165,32 +169,32 @@ public class Generateur {
 				builder.appendLineTab("PUSH(r0)");
 				break;
 			case PLUS:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("ADD(r1, r2, r3)");
 				builder.appendLineTab("PUSH(r3)");
 				break;
 			case MOINS:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("SUB(r1, r2, r3)");
 				builder.appendLineTab("PUSH(r3)");
 				break;
 			case MUL:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("MUL(r1, r2, r3)");
 				builder.appendLineTab("PUSH(r3)");
 				break;
 			case DIV:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("DIV(r1, r2, r3)");
@@ -217,48 +221,48 @@ public class Generateur {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		switch (noeud.getCat()) {
 			case SUP:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPLT(r2, r1, r3)");
 				builder.appendLineTab("PUSH(r3)");
 				break;
 			case SUPE:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPLE(r2, r1, r3)");
 				builder.appendLineTab("PUSH(r3)");
 				break;
 			case INF:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(1)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPLT(r1, r2, r3)");
 				builder.appendLineTab("PUSH(r3)");
 				break;
 			case INFE:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPLE(r1, r2, r3)");
 				builder.appendLineTab("PUSH(r3)");
 				break;
 			case EG:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPEQ(r1, r2, r3)");
 				builder.appendLineTab("PUSH(r3)");
 				break;
 			case DIF:
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
-				builder.appendLine(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(0)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPEQ(r1, r2, r3)");
@@ -280,7 +284,7 @@ public class Generateur {
 	 */
 	private String genererAffectation(Noeud noeud) {
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.appendLine(genererExpression(noeud.getFils().get(1)));
+		builder.append(genererExpression(noeud.getFils().get(1)));
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab(String.format("ST(r0, %s)", ((NoeudObj) noeud.getFils().get(0)).getValeur()));
 		return builder.toString();
@@ -295,7 +299,7 @@ public class Generateur {
 	 */
 	private String genererEcrire(Noeud noeud) {
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.appendLine(genererExpression(noeud.getFils().get(0)));
+		builder.append(genererExpression(noeud.getFils().get(0)));
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab("WRINT()");
 		return builder.toString();
@@ -311,13 +315,13 @@ public class Generateur {
 	private String genererSi(Noeud noeud) {
 		String numeroSi = noeud.toString();
 		StringBuilderPlus builder = new StringBuilderPlus();
-		builder.appendLine(genererExpressionBooleenne(noeud.getFils().get(0)));
+		builder.append(genererExpressionBooleenne(noeud.getFils().get(0)));
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab(String.format("BF(r0, sinon%s)", numeroSi));
-		builder.appendLine(genererBloc(noeud.getFils().get(1)));
+		builder.append(genererBloc(noeud.getFils().get(1)));
 		builder.appendLineTab(String.format("JMP(fsi%s)", numeroSi));
 		builder.appendLine(String.format("sinon%s:", numeroSi));
-		builder.appendLine(genererBloc(noeud.getFils().get(2)));
+		builder.append(genererBloc(noeud.getFils().get(2)));
 		builder.appendLine(String.format("fsi%s:", numeroSi));
 		return builder.toString();
 	}
@@ -333,10 +337,10 @@ public class Generateur {
 		String numeroTq = noeud.toString();
 		StringBuilderPlus builder = new StringBuilderPlus();
 		builder.appendLine(String.format("tantque%s:", numeroTq));
-		builder.appendLine(genererExpressionBooleenne(noeud.getFils().get(0)));
+		builder.append(genererExpressionBooleenne(noeud.getFils().get(0)));
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab(String.format("BF(r0, ftantque%s)", numeroTq));
-		builder.appendLine(genererBloc(noeud.getFils().get(1)));
+		builder.append(genererBloc(noeud.getFils().get(1)));
 		builder.appendLineTab(String.format("JMP(tantque%s)", numeroTq));
 		builder.appendLineTab(String.format("ftantque%s:", numeroTq));
 		return builder.toString();
@@ -350,8 +354,9 @@ public class Generateur {
 	 * 		Le code asm.
 	 */
 	private String genererAppel(Noeud noeud) {
+		NoeudObj noeudObj = (NoeudObj) noeud;
 		StringBuilderPlus builder = new StringBuilderPlus();
-		
+		builder.appendLineTab(String.format("CALL(%s)", noeudObj.getValeur()));
 		return builder.toString();
 	}
 }
