@@ -150,9 +150,6 @@ public class Generateur {
 			case TQ:
 				builder.append(genererTantQue((TantQue) noeud));
 				break;
-			case APPEL:
-				builder.append(genererAppel((Appel) noeud));
-				break;
 			case RET:
 				builder.append(genererRetourne((Retour) noeud));
 				break;
@@ -229,6 +226,9 @@ public class Generateur {
 			case LIRE:
 				builder.appendLineTab("RDINT()");
 				builder.appendLineTab("PUSH(r0)");
+				break;
+			case APPEL:
+				builder.append(genererAppel((Appel) noeud));
 				break;
 			default:
 				break;
