@@ -13,16 +13,16 @@
 
 debut
 	res ← “.include beta.uasm”
-  res +← “.include intio.asm”
-  res +← “.options tty” 
-  res +← “CMOVE(pile, SP)”
-  res +← “BR(debut)”
-  res +← genererData(tds)
-  res +← genererCode(noeud)
-  res +← “debut:”
-  res +← “CALL(main)”
-  res +← “HALT()”
-  res +← “pile:”
+  	res +← “.include intio.asm”
+  	res +← “.options tty” 
+  	res +← “CMOVE(pile, SP)”
+  	res +← “BR(debut)”
+  	res +← genererData(tds)
+  	res +← genererCode(noeud)
+  	res +← “debut:”
+  	res +← “CALL(main)”
+  	res +← “HALT()”
+  	res +← “pile:”
 fin
 ```
 
@@ -54,7 +54,7 @@ fin
 debut
 	res ← “”
 	pour chaque fils f dans noeud faire
-	  res +← genererFonction(f, tds) 	
+		res +← genererFonction(f, tds) 	
 	fpour
 fin
 ```
@@ -67,17 +67,17 @@ fin
 
 debut
 	res ← fonction.nom + “:”
-  res +← “PUSH(LP)”
-  res +← “PUSH(BP)”
-  res +← “MOVE(SP, BP)”
-  res +← “ALLOCATE(” + tds.rechercher(fonction.nom, global).nbLoc + “)”
-  pour chaque fils f dans fonction faire
+  	res +← “PUSH(LP)”
+  	res +← “PUSH(BP)”
+  	res +← “MOVE(SP, BP)”
+  	res +← “ALLOCATE(” + tds.rechercher(fonction.nom, global).nbLoc + “)”
+  	pour chaque fils f dans fonction faire
 		res +← genererInstruction(f, tds)
 	fpour
-  res +← “MOVE(BP,  SP)”
-  res +← “POP(BP)”
-  res +← “POP(LP)”
-  res +← “RTN()”
+  	res +← “MOVE(BP,  SP)”
+  	res +← “POP(BP)”
+  	res +← “POP(LP)”
+  	res +← “RTN()”
 fin
 ```
 
@@ -142,18 +142,18 @@ debut
 			res +← “PUSH(r0)”
 		cas où noeud.scope = local :
 			res +← “GETFRAME(“ + (symbole.rang * 4) + “, r0)”
-      res +← “PUSH(r0)
-    cas où noeud.scope = param :
-	    res +← “GETFRAME(“ + ((symbole.rang + 3) * (-4)) + “, r0)”
-	    res +← “PUSH(r0)”
+      			res +← “PUSH(r0)
+    		cas où noeud.scope = param :
+			res +← “GETFRAME(“ + ((symbole.rang + 3) * (-4)) + “, r0)”
+	    		res +← “PUSH(r0)”
 
 	cas où noeud.cat est une opération :
 		res +← genererExpression(fg(noeud), tds)
 		res +← genererExpression(fd(noeud), tds)
 		res +← “POP(r2)”
-    res +← “POP(r1)”
-    res +← “ADD(r1, r2, r3)”   [ou SUB, MUL, DIV]
-    res +← “PUSH(r3)”
+    		res +← “POP(r1)”
+    		res +← “ADD(r1, r2, r3)”   [ou SUB, MUL, DIV]
+    		res +← “PUSH(r3)”
 
 	cas où noeud.cat est une lecture :
 		res +← “RDINT()”
@@ -174,36 +174,36 @@ debut
 	res ← “”
 	cas où noeud.cat est l’opération ‘>’   [ ou ‘>=’ ] :
 		res +← genererExpression(fg(noeud), tds)
-    res +← genererExpression(fd(noeud), tds)
+    		res +← genererExpression(fd(noeud), tds)
 		res +← “POP(r2)”
-    res +← “POP(r1)”
-    res +← “CMPLT(r2, r1, r3)”  [ou CMPLE(r2, r1, r3) si ‘>=’]
-    res +← “PUSH(r3)”
+    		res +← “POP(r1)”
+    		res +← “CMPLT(r2, r1, r3)”  [ou CMPLE(r2, r1, r3) si ‘>=’]
+    		res +← “PUSH(r3)”
 
-  cas où noeud.cat est l’opération ‘<’   [ ou ‘<=’ ] :
+  	cas où noeud.cat est l’opération ‘<’   [ ou ‘<=’ ] :
 		res +← genererExpression(fg(noeud), tds)
-    res +← genererExpression(fd(noeud), tds)
+    		res +← genererExpression(fd(noeud), tds)
 		res +← “POP(r2)”
-    res +← “POP(r1)”
-    res +← “CMPLT(r1, r2, r3)”  [ou CMPLE(r1, r2, r3) si ‘<=’]
-    res +← “PUSH(r3)”
+    		res +← “POP(r1)”
+    		res +← “CMPLT(r1, r2, r3)”  [ou CMPLE(r1, r2, r3) si ‘<=’]
+    		res +← “PUSH(r3)”
 
-  cas où noeud.cat est l’opération ‘=’ :
+  	cas où noeud.cat est l’opération ‘=’ :
 		res +← genererExpression(fg(noeud), tds)
-    res +← genererExpression(fd(noeud), tds)
+    		res +← genererExpression(fd(noeud), tds)
 		res +← “POP(r2)”
-    res +← “POP(r1)”
-    res +← “CMPEQ(r1, r2, r3)”
-    res +← “PUSH(r3)”
+    		res +← “POP(r1)”
+	    	res +← “CMPEQ(r1, r2, r3)”
+    		res +← “PUSH(r3)”
 
-  cas où noeud.cat est l’opération ‘!=’ :
+  	cas où noeud.cat est l’opération ‘!=’ :
 		res +← genererExpression(fg(noeud), tds)
-    res +← genererExpression(fd(noeud), tds)
+    		res +← genererExpression(fd(noeud), tds)
 		res +← “POP(r2)”
-    res +← “POP(r1)”
-    res +← “CMPEQ(r1, r2, r3)”
-    res +← “CMPEQC(r3, 0, r4)”
-    res +← “PUSH(r4)”
+    		res +← “POP(r1)”
+    		res +← “CMPEQ(r1, r2, r3)”
+    		res +← “CMPEQC(r3, 0, r4)”
+    		res +← “PUSH(r4)”
 fin
 ```
 
@@ -223,7 +223,7 @@ debut
 	cas où symbole.cat = local
 		res +← “PUTFRAME(r0, “ + (symbole.rang * 4) +”)”
 	cas où symbole.cat = param
-    res +← “PUTFRAME(r0, “ + ((symbole.rang + 3) * (-4)) +”)”
+    	res +← “PUTFRAME(r0, “ + ((symbole.rang + 3) * (-4)) +”)”
 fin
 ```
 
@@ -268,10 +268,10 @@ debut
 	res ← “tantque” + tantque.# + “:”
 	res +←  genererExpressionBooléenne(fils0(tantque), tds)
 	res +← “POP(R0)”
-  res +← “BF(r0, ftantque” + tantque.# + “)”
-  res +← genererBloc(fils1(tantque), tds)
-  res +← “BR(tantque” + tantque.# + “)”
-  res +← “ftantque” + tantque.#  + “:”
+  	res +← “BF(r0, ftantque” + tantque.# + “)”
+  	res +← genererBloc(fils1(tantque), tds)
+  	res +← “BR(tantque” + tantque.# + “)”
+  	res +← “ftantque” + tantque.#  + “:”
 fin
 ```
 
