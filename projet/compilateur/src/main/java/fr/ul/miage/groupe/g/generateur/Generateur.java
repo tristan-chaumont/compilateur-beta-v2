@@ -390,7 +390,7 @@ public class Generateur {
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab(String.format("BF(r0, sinon%d)", numeroSi));
 		builder.append(genererBloc(si.getBlocAlors()));
-		builder.appendLineTab(String.format("JMP(fsi%d)", numeroSi));
+		builder.appendLineTab(String.format("BR(fsi%d)", numeroSi));
 		builder.appendLine(String.format("sinon%d:", numeroSi));
 		builder.append(genererBloc(si.getBlocSinon()));
 		builder.appendLine(String.format("fsi%d:", numeroSi));
@@ -433,8 +433,8 @@ public class Generateur {
 			builder.appendLineTab("| Allocation de 1 car la fonction a un type de retour.");
 			builder.appendLineTab("ALLOCATE(1)");
 		}
-		for (Noeud parametres: appel.getFils()) {
-			builder.append(genererExpression(parametres));
+		for (Noeud parametre: appel.getFils()) {
+			builder.append(genererExpression(parametre));
 		}
 		builder.appendLineTab(String.format("CALL(%s, %d)", ((Fonction) appel.getValeur()).getValeur(), symbole.getNbParam()));
 		return builder.toString();
