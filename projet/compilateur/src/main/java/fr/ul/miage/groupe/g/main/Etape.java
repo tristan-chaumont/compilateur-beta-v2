@@ -563,17 +563,53 @@ public class Etape {
 	}
 
 	public Noeud genererArbreEtape8() {
-		return null;
+		Prog programme = new Prog();
+		// fonction f
+		Fonction f = new Fonction("f");
+		// x = i + j
+		Affectation affectationX = new Affectation();
+		Idf idfX = new Idf("x", f);
+		Idf idfI = new Idf("i", f);
+		Idf idfJ = new Idf("j", f);
+		Plus plus = new Plus();
+		plus.setFilsGauche(idfI);
+		plus.setFilsDroit(idfJ);
+		affectationX.setFilsGauche(idfX);
+		affectationX.setFilsDroit(plus);
+		// retourne x + 10
+		Retour retour = new Retour(f);
+		Plus plusRetour = new Plus();
+		plusRetour.setFilsGauche(idfX);
+		plusRetour.setFilsDroit(new Const(10));
+		retour.setLeFils(plusRetour);
+		f.ajouterDesFils(Arrays.asList(affectationX, retour));
+		
+		// main
+		Fonction main = new Fonction("main");
+		// a = f(1,2)
+		Affectation affectationA = new Affectation();
+		Idf idfA = new Idf("a");
+		affectationA.setFilsGauche(idfA);
+		Appel appel = new Appel(f);
+		appel.ajouterDesFils(Arrays.asList(new Const(1), new Const(2)));
+		affectationA.setFilsDroit(appel);
+		// ecrire(a)
+		Ecrire ecrire = new Ecrire();
+		ecrire.ajouterUnFils(idfA);
+		main.ajouterUnFils(affectationA);
+		main.ajouterUnFils(ecrire);
+		
+		programme.ajouterDesFils(Arrays.asList(f, main));
+		return programme;
 	}
 	
 	public Tds genererTdsEtape8() {
 		Tds tds = new Tds();
 		
-		// entier a = 10
+		// entier a
 		try {
 			Symbole s = tds.ajouter("a", Symbole.CAT_GLOBAL, Symbole.SCOPE_GLOBAL);
 			s.setType(Symbole.TYPE_ENTIER);
-			s.setValeur(10);
 		} catch(Exception e) {
 			LOG.warning(e.getMessage());
 		}
@@ -581,9 +617,9 @@ public class Etape {
 		// fonction f
 		try {
 			Symbole s = tds.ajouter("f", Symbole.CAT_FONCTION, Symbole.SCOPE_GLOBAL);
-			s.setType(Symbole.TYPE_VOID);
-			s.setNbParam(1);
-			s.setNbLoc(2);
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setNbParam(2);
+			s.setNbLoc(1);
 		} catch(Exception e) {
 			LOG.warning(e.getMessage());
 		}
@@ -597,20 +633,20 @@ public class Etape {
 			LOG.warning(e.getMessage());
 		}
 		
+		// parametre j dans fonction f
+		try {
+			Symbole s = tds.ajouter("j", Symbole.CAT_PARAMETRE, "f");
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setRang(1);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
 		// variable locale x dans fonction f
 		try {
 			Symbole s = tds.ajouter("x", Symbole.CAT_LOCAL, "f");
 			s.setType(Symbole.TYPE_ENTIER);
 			s.setRang(0);
-		} catch(Exception e) {
-			LOG.warning(e.getMessage());
-		}	
-		
-		// variable locale y dans fonction f
-		try {
-			Symbole s = tds.ajouter("y", Symbole.CAT_LOCAL, "f");
-			s.setType(Symbole.TYPE_ENTIER);
-			s.setRang(1);
 		} catch(Exception e) {
 			LOG.warning(e.getMessage());
 		}
@@ -634,11 +670,11 @@ public class Etape {
 		System.out.println("2. " + s);
 		s = tds.rechercher("a", Symbole.SCOPE_GLOBAL);
 		System.out.println("3. " + s);
-		s = tds.rechercher("x", "f");
-		System.out.println("4. " + s);
-		s = tds.rechercher("y", "f");
-		System.out.println("5. " + s);
 		s = tds.rechercher("i", "f");
+		System.out.println("4. " + s);
+		s = tds.rechercher("j", "f");
+		System.out.println("5. " + s);
+		s = tds.rechercher("x", "f");
 		System.out.println("6. " + s);*/
 		
 		return tds;
