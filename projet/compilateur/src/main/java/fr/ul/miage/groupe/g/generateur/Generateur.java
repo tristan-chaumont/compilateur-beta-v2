@@ -90,9 +90,7 @@ public class Generateur {
 	private String genererCode(Noeud noeud) {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		for (Noeud n: noeud.getFils()) {
-			if (n.getCat().equals(Categories.FONCTION)){
-				builder.append(genererFonction((Fonction) n));
-			}
+			builder.append(genererFonction((Fonction) n));
 		}
 		return builder.toString();
 	}
