@@ -399,7 +399,7 @@ public class Generateur {
 		for (Noeud parametres: appel.getFils()) {
 			builder.append(genererExpression(parametres));
 			builder.appendLineTab("POP(r1)");
-			builder.appendLineTab("CMOVE(r1, r0)");
+			builder.appendLineTab("MOVE(r1, r0)");
 			builder.appendLineTab("PUSH(r0)");
 		}
 		builder.appendLineTab(String.format("CALL(%s, %d)", ((Fonction) appel.getValeur()).getValeur(), symbole.getNbParam()));
