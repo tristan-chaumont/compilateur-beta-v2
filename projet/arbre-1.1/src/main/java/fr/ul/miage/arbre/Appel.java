@@ -21,6 +21,7 @@
 package fr.ul.miage.arbre;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Description :
@@ -47,4 +48,11 @@ public class Appel extends NoeudObj {
 		getFils().add(0, n);
 	}
 	
+	@Override
+	public String commentaire() {
+		StringBuilder builder = new StringBuilder();
+		String parametres = getFils().stream().map(Noeud::commentaire).collect(Collectors.joining(", "));
+		builder.append(String.format("%s(%s)", getValeur(), parametres));
+		return builder.toString();
+	}
 }

@@ -58,4 +58,11 @@ public class Affectation extends Noeud0 {
 	public void setFilsDroit(Noeud n) {
 		getFils().add(1, n);
 	}
+	
+	@Override
+	public String commentaire() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getFilsGauche().commentaire()).append(" = ").append(getFilsDroit().commentaire());
+		return builder.toString();
+	}
 }

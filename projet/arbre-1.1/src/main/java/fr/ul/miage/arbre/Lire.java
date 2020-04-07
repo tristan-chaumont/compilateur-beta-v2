@@ -31,4 +31,9 @@ public class Lire extends Noeud0 {
 		setCat(Categories.LIRE);
 		setFils(null);//feuille
 	}
+	
+	@Override
+	public String commentaire() {
+		return "lire()";
+	}
 }

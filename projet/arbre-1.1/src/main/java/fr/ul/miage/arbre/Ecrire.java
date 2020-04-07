@@ -45,4 +45,9 @@ public class Ecrire extends Noeud0 {
 	public void setLeFils(Noeud n) {
 		getFils().add(0, n);
 	}
+	
+	@Override
+	public String commentaire() {
+		return new StringBuilder().append("ecrire(").append(getLeFils().commentaire()).append(")").toString();
+	}
 }

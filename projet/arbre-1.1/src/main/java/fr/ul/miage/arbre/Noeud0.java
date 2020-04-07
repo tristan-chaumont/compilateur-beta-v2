@@ -27,7 +27,7 @@ package fr.ul.miage.arbre;
  * @author Azim Roussanaly
  * Created at 28 févr. 2019
  */
-class Noeud0 extends Noeud {
+abstract class Noeud0 extends Noeud {
 	//constructeur
 	protected Noeud0() {
 	}
@@ -40,5 +40,4 @@ class Noeud0 extends Noeud {
 		String label = getCat().toString();
 		return label;
 	}
-
 }

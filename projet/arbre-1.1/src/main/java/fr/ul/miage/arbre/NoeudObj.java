@@ -28,7 +28,7 @@ package fr.ul.miage.arbre;
  * @author Azim Roussanaly
  * Created at 28 févr. 2019
  */
-public class NoeudObj extends Noeud {
+abstract class NoeudObj extends Noeud {
 	//attribut
 	private Object valeur;
 	//constructeur

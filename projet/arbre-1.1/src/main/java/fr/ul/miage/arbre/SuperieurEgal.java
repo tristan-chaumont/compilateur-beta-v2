@@ -58,4 +58,9 @@ public class SuperieurEgal extends Noeud0 {
 	public void setFilsDroit(Noeud n) {
 		getFils().add(1, n);
 	}
+	
+	@Override
+	public String commentaire() {
+		return new StringBuilder().append("(").append(getFilsGauche().commentaire()).append(" >= ").append(getFilsDroit().commentaire()).append(")").toString();
+	}
 }

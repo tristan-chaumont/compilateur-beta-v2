@@ -33,4 +33,8 @@ public class Const extends NoeudInt {
 		setCat(Categories.CONST);
 		setFils(null);
 	}
+	
+	public String commentaire() {
+		return String.valueOf(getValeur());
+	}
 }

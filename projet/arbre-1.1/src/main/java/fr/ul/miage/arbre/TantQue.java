@@ -61,4 +61,9 @@ public class TantQue extends NoeudInt {
 	public void setBlocAlors(Bloc n) {
 		getFils().add(1, n);
 	}
+	
+	@Override
+	public String commentaire() {
+		return new StringBuilder().append("Tant que ").append(getCondition().commentaire()).toString();
+	}
 }

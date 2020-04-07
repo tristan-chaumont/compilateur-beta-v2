@@ -33,4 +33,9 @@ public class Bloc extends Noeud0 {
 		setCat(Categories.BLOC);
 		setFils(new ArrayList<>());
 	}
+
+	@Override
+	public String commentaire() {
+		return "";
+	}
 }

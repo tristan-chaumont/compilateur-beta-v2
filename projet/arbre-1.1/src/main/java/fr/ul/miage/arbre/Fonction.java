@@ -34,4 +34,9 @@ public class Fonction extends NoeudObj{
 		setValeur(valeur);
 		setFils(new ArrayList<Noeud>());
 	}
+	
+	@Override
+	public String commentaire() {
+		return String.format("Fonction '%s'", getValeur());
+	}
 }

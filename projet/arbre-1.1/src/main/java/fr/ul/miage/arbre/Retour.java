@@ -46,4 +46,9 @@ public class Retour extends NoeudObj {
 	public void setLeFils(Noeud n) {
 		getFils().add(0, n);
 	}
+	
+	@Override
+	public String commentaire() {
+		return new StringBuilder().append("Retourne ").append(getLeFils().commentaire()).toString();
+	}
 }

@@ -74,4 +74,9 @@ public class Si extends NoeudInt {
 	public void setBlocSinon(Bloc n) {
 		getFils().set(2, n);
 	}
+	
+	@Override
+	public String commentaire() {
+		return new StringBuilder().append("Si ").append(getCondition().commentaire()).toString();
+	}
 }

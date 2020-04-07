@@ -47,4 +47,9 @@ public class Idf extends NoeudObj {
 	public Fonction getFonction() {
 		return fonction;
 	}
+	
+	@Override
+	public String commentaire() {
+		return String.valueOf(getValeur());
+	}
 }

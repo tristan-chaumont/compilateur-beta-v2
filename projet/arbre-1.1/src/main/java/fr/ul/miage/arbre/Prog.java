@@ -34,4 +34,9 @@ public class Prog extends Noeud0 {
 		setCat(Categories.PROG);
 		setFils(new ArrayList<>());
 	}
+	
+	@Override
+	public String commentaire() {
+		return "";
+	}
 }

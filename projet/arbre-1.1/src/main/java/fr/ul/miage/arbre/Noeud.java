@@ -99,5 +99,7 @@ public abstract class Noeud {
 	public void setFils(List<Noeud> fils) {
 		this.fils = fils;
 	}
+	
+	public abstract String commentaire();
 
 }
