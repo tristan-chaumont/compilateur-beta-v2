@@ -4,6 +4,8 @@
 * Vincent Dahlem
 * Quentin Noirot
 
+> Création d'un compilateur pouvant traduire un langage simple en assembleur [bêta](https://computationstructures.org/notes/pdfs/beta.pdf).
+
 ## Algorithmes utilisés
 ##### genererProgramme() 
 ```
