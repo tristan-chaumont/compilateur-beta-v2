@@ -561,4 +561,86 @@ public class Etape {
 		
 		return tds;
 	}
+
+	public Noeud genererArbreEtape8() {
+		return null;
+	}
+	
+	public Tds genererTdsEtape8() {
+		Tds tds = new Tds();
+		
+		// entier a = 10
+		try {
+			Symbole s = tds.ajouter("a", Symbole.CAT_GLOBAL, Symbole.SCOPE_GLOBAL);
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setValeur(10);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		// fonction f
+		try {
+			Symbole s = tds.ajouter("f", Symbole.CAT_FONCTION, Symbole.SCOPE_GLOBAL);
+			s.setType(Symbole.TYPE_VOID);
+			s.setNbParam(1);
+			s.setNbLoc(2);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		// parametre i dans fonction f
+		try {
+			Symbole s = tds.ajouter("i", Symbole.CAT_PARAMETRE, "f");
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setRang(0);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		// variable locale x dans fonction f
+		try {
+			Symbole s = tds.ajouter("x", Symbole.CAT_LOCAL, "f");
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setRang(0);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}	
+		
+		// variable locale y dans fonction f
+		try {
+			Symbole s = tds.ajouter("y", Symbole.CAT_LOCAL, "f");
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setRang(1);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		// fonction "main"
+		try {
+			Symbole s = tds.ajouter("main", Symbole.CAT_FONCTION, Symbole.SCOPE_GLOBAL);
+			s.setType(Symbole.TYPE_VOID);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		/*
+		 * OPTIONNEL (Pour voir si ça fonctionne)
+		 */
+		/*System.out.println(tds.toString());
+		Symbole s = null;
+		s = tds.rechercher("main", Symbole.SCOPE_GLOBAL);
+		System.out.println("1. " + s);
+		s = tds.rechercher("f", Symbole.SCOPE_GLOBAL);
+		System.out.println("2. " + s);
+		s = tds.rechercher("a", Symbole.SCOPE_GLOBAL);
+		System.out.println("3. " + s);
+		s = tds.rechercher("x", "f");
+		System.out.println("4. " + s);
+		s = tds.rechercher("y", "f");
+		System.out.println("5. " + s);
+		s = tds.rechercher("i", "f");
+		System.out.println("6. " + s);*/
+		
+		return tds;
+	}
 }

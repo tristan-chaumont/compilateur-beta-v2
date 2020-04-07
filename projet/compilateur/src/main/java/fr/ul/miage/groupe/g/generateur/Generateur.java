@@ -185,13 +185,14 @@ public class Generateur {
 						builder.appendLineTab("PUSH(r0)");
 						break;
 					case CAT_LOCAL:
-						builder.appendLineTab("POP(r0)");
-						builder.appendLineTab(String.format("PUTFRAME(r0, %d)", (symbole.getRang() + 1) * 4));
-					case CAT_PARAMETRE:
-						builder.appendLineTab(String.format("GETFRAME(%d, r0)", - (symbole.getRang() + 2) * 4));
+						builder.appendLineTab(String.format("GETFRAME(%d, r0)", symbole.getRang() * 4));
 						builder.appendLineTab("PUSH(r0)");
 						break;
-				}		
+					case CAT_PARAMETRE:
+						builder.appendLineTab(String.format("GETFRAME(%d, r0)", (symbole.getRang() + 3) * (-4)));
+						builder.appendLineTab("PUSH(r0)");
+						break;
+				}	
 				break;
 			case PLUS:
 				builder.append(genererExpression(noeud.getFils().get(0)));
@@ -311,7 +312,19 @@ public class Generateur {
 		StringBuilderPlus builder = new StringBuilderPlus();
 		builder.append(genererExpression(affectation.getFilsDroit()));
 		builder.appendLineTab("POP(r0)");
-		builder.appendLineTab(String.format("ST(r0, %s)", ((Idf) affectation.getFilsGauche()).getValeur()));
+		Idf idf = (Idf) affectation.getFilsGauche();
+		Symbole symbole = tds.rechercher((String) idf.getValeur(), (String) (idf.getFonction() != null ? idf.getFonction().getValeur() : SCOPE_GLOBAL));
+		switch (symbole.getCat()) {
+			case CAT_GLOBAL:
+				builder.appendLineTab(String.format("ST(r0, %s)", idf.getValeur()));
+				break;
+			case CAT_LOCAL:
+				builder.appendLineTab(String.format("PUTFRAME(r0, %d)", symbole.getRang() * 4));
+				break;
+			case CAT_PARAMETRE:
+				builder.appendLineTab(String.format("PUTFRAME(r0, %d)", (symbole.getRang() + 3) * (-4)));
+				break;
+		}
 		return builder.toString();
 	}
 	

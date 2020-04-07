@@ -14,14 +14,14 @@ public class Main {
 		Noeud arbre = etape.genererArbreEtape1();
 		Tds tds = etape.genererTdsEtape1();
 		generateur = new Generateur(tds);
-		//System.out.println(generateur.genererProgramme(arbre, tds));
+		//System.out.println(generateur.genererProgramme(arbre));
 		
 		
 		// ETAPE 2
 		arbre = etape.genererArbreEtape2();
 		tds = etape.genererTdsEtape2();
 		generateur = new Generateur(tds);
-		//System.out.println(generateur.genererProgramme(arbre, tds));
+		//System.out.println(generateur.genererProgramme(arbre));
 		
 		
 		// ETAPE 3
