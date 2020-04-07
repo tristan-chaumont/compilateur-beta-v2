@@ -153,6 +153,8 @@ public class Generateur {
 			case RET:
 				builder.append(genererRetourne((Retour) noeud));
 				break;
+			case APPEL:
+				builder.append(genererExpression((Appel) noeud));
 			default:
 				break;
 		}
