@@ -46,6 +46,12 @@ public class Main {
 		arbre = etape.genererArbreEtape6();
 		tds = etape.genererTdsEtape6();
 		generateur = new Generateur(tds);
+		//System.out.println(generateur.genererProgramme(arbre));
+		
+		// ETAPE 7
+		arbre = etape.genererArbreEtape7();
+		tds = etape.genererTdsEtape7();
+		generateur = new Generateur(tds);
 		System.out.println(generateur.genererProgramme(arbre));
 	}
 }

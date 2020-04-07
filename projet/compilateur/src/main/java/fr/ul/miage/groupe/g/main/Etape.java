@@ -127,14 +127,13 @@ public class Etape {
 		Prog programme = new Prog();
 		
 		Fonction main = new Fonction("main");
-		Bloc bloc = new Bloc();
 		
 		// k = 2
 		Affectation affectationK = new Affectation();
 		affectationK.setFilsGauche(new Idf("k"));
 		affectationK.setFilsDroit(new Const(2));
 		
-		bloc.ajouterUnFils(affectationK);
+		main.ajouterUnFils(affectationK);
 		
 		// l = i + j * 3
 		Affectation affectationL = new Affectation();
@@ -147,8 +146,7 @@ public class Etape {
 		plus.setFilsDroit(multiplication);
 		affectationL.setFilsDroit(plus);
 		
-		bloc.ajouterUnFils(affectationL);
-		main.ajouterUnFils(bloc);
+		main.ajouterUnFils(affectationL);
 		
 		programme.ajouterUnFils(main);
 		return programme;
@@ -222,7 +220,6 @@ public class Etape {
 		Prog programme = new Prog();
 		
 		Fonction main = new Fonction("main");
-		Bloc bloc = new Bloc();
 		
 		// i = lire()
 		Affectation affectationI = new Affectation();
@@ -230,7 +227,7 @@ public class Etape {
 		affectationI.setFilsGauche(new Idf("i"));
 		affectationI.setFilsDroit(new Lire());
 		
-		bloc.ajouterUnFils(affectationI);
+		main.ajouterUnFils(affectationI);
 		
 		// ecrire(i + j)
 		Ecrire ecrire = new Ecrire();
@@ -238,8 +235,7 @@ public class Etape {
 		plus.ajouterDesFils(new ArrayList<>(Arrays.asList(idfI, new Idf("j"))));
 		ecrire.ajouterUnFils(plus);
 		
-		bloc.ajouterUnFils(ecrire);
-		main.ajouterUnFils(bloc);
+		main.ajouterUnFils(ecrire);
 		
 		programme.ajouterUnFils(main);
 		return programme;
@@ -282,7 +278,9 @@ public class Etape {
 		s = tds.rechercher("main", Symbole.SCOPE_GLOBAL);
 		System.out.println("1. " + s);
 		s = tds.rechercher("i", Symbole.SCOPE_GLOBAL);
-		System.out.println("2. " + s);*/
+		System.out.println("2. " + s);
+		s = tds.rechercher("j", Symbole.SCOPE_GLOBAL);
+		System.out.println("3. " + s);*/
 		
 		return tds;
 	}
@@ -291,7 +289,6 @@ public class Etape {
 		Prog programme = new Prog();
 		
 		Fonction main = new Fonction("main");
-		Bloc bloc = new Bloc();
 		
 		// i = lire()
 		Affectation affectationI = new Affectation();
@@ -299,7 +296,7 @@ public class Etape {
 		affectationI.setFilsGauche(idfI);
 		affectationI.setFilsDroit(new Lire());
 		
-		bloc.ajouterUnFils(affectationI);
+		main.ajouterUnFils(affectationI);
 		
 		// si(i < 10)
 		Si si = new Si(1);
@@ -320,8 +317,7 @@ public class Etape {
 		blocSinon.ajouterUnFils(ecrire2);
 		si.setBlocSinon(blocSinon);
 		
-		bloc.ajouterUnFils(si);
-		main.ajouterUnFils(bloc);
+		main.ajouterUnFils(si);
 		
 		programme.ajouterUnFils(main);
 		return programme;
@@ -352,7 +348,9 @@ public class Etape {
 		/*System.out.println(tds.toString());
 		Symbole s = null;
 		s = tds.rechercher("main", Symbole.SCOPE_GLOBAL);
-		System.out.println("1. " + s);*/
+		System.out.println("1. " + s);
+		s = tds.rechercher("i", Symbole.SCOPE_GLOBAL);
+		System.out.println("2. " + s);*/
 		
 		return tds;
 	}
@@ -361,7 +359,6 @@ public class Etape {
 		Prog programme = new Prog();
 		
 		Fonction main = new Fonction("main");
-		Bloc bloc = new Bloc();
 		
 		// i = 0
 		Affectation affectationI = new Affectation();
@@ -369,7 +366,7 @@ public class Etape {
 		affectationI.setFilsGauche(idfI);
 		affectationI.setFilsDroit(new Const(0));
 		
-		bloc.ajouterUnFils(affectationI);
+		main.ajouterUnFils(affectationI);
 		
 		// tantque(i < n)
 		TantQue tantque = new TantQue(1);
@@ -395,8 +392,7 @@ public class Etape {
 		
 		tantque.setBlocAlors(blocTq);
 		
-		bloc.ajouterUnFils(tantque);
-		main.ajouterUnFils(bloc);
+		main.ajouterUnFils(tantque);
 		
 		programme.ajouterUnFils(main);
 		return programme;
@@ -436,7 +432,132 @@ public class Etape {
 		/*System.out.println(tds.toString());
 		Symbole s = null;
 		s = tds.rechercher("main", Symbole.SCOPE_GLOBAL);
-		System.out.println("1. " + s);*/
+		System.out.println("1. " + s);
+		s = tds.rechercher("i", Symbole.SCOPE_GLOBAL);
+		System.out.println("2. " + s);
+		s = tds.rechercher("n", Symbole.SCOPE_GLOBAL);
+		System.out.println("3. " + s);*/
+		
+		return tds;
+	}
+
+	public Noeud genererArbreEtape7() {
+		Prog programme = new Prog();
+		
+		// fonction f
+		Fonction f = new Fonction("f");
+		// x = 1
+		Affectation affectationX = new Affectation();
+		Idf idfX = new Idf("x", f);
+		affectationX.setFilsGauche(idfX);
+		affectationX.setFilsDroit(new Const(1));
+		// y = 1
+		Affectation affectationY = new Affectation();
+		Idf idfY = new Idf("y", f);
+		affectationY.setFilsGauche(idfY);
+		affectationY.setFilsDroit(new Const(1));
+		// a = i + x + y
+		Affectation affectationA = new Affectation();
+		Idf idfA = new Idf("a");
+		affectationA.setFilsGauche(idfA);
+		Plus plus1 = new Plus();
+		plus1.setFilsGauche(new Idf("i", f));
+		Plus plus2 = new Plus();
+		plus2.setFilsGauche(idfX);
+		plus2.setFilsDroit(idfY);
+		plus1.setFilsDroit(plus2);
+		affectationA.setFilsDroit(plus1);
+		f.ajouterDesFils(Arrays.asList(affectationX, affectationY, affectationA));
+		
+		// main
+		Fonction main = new Fonction("main");
+		// appel -> f(3)
+		Appel appel = new Appel(f);
+		appel.ajouterUnFils(new Const(3));
+		// ecrire(a)
+		Ecrire ecrire = new Ecrire();
+		ecrire.ajouterUnFils(idfA);
+		main.ajouterDesFils(Arrays.asList(appel, ecrire));
+		
+		programme.ajouterDesFils(Arrays.asList(f, main));
+		
+		return programme;
+	}
+	
+	public Tds genererTdsEtape7() {
+		Tds tds = new Tds();
+		
+		// entier a = 10
+		try {
+			Symbole s = tds.ajouter("a", Symbole.CAT_GLOBAL, Symbole.SCOPE_GLOBAL);
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setValeur(10);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		// fonction f
+		try {
+			Symbole s = tds.ajouter("f", Symbole.CAT_FONCTION, Symbole.SCOPE_GLOBAL);
+			s.setType(Symbole.TYPE_VOID);
+			s.setNbParam(1);
+			s.setNbLoc(2);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		// parametre i dans fonction f
+		try {
+			Symbole s = tds.ajouter("i", Symbole.CAT_PARAMETRE, "f");
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setRang(0);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		// variable locale x dans fonction f
+		try {
+			Symbole s = tds.ajouter("x", Symbole.CAT_LOCAL, "f");
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setRang(0);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}	
+		
+		// variable locale y dans fonction f
+		try {
+			Symbole s = tds.ajouter("y", Symbole.CAT_LOCAL, "f");
+			s.setType(Symbole.TYPE_ENTIER);
+			s.setRang(1);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		// fonction "main"
+		try {
+			Symbole s = tds.ajouter("main", Symbole.CAT_FONCTION, Symbole.SCOPE_GLOBAL);
+			s.setType(Symbole.TYPE_VOID);
+		} catch(Exception e) {
+			LOG.warning(e.getMessage());
+		}
+		
+		/*
+		 * OPTIONNEL (Pour voir si ça fonctionne)
+		 */
+		/*System.out.println(tds.toString());
+		Symbole s = null;
+		s = tds.rechercher("main", Symbole.SCOPE_GLOBAL);
+		System.out.println("1. " + s);
+		s = tds.rechercher("f", Symbole.SCOPE_GLOBAL);
+		System.out.println("2. " + s);
+		s = tds.rechercher("a", Symbole.SCOPE_GLOBAL);
+		System.out.println("3. " + s);
+		s = tds.rechercher("x", "f");
+		System.out.println("4. " + s);
+		s = tds.rechercher("y", "f");
+		System.out.println("5. " + s);
+		s = tds.rechercher("i", "f");
+		System.out.println("6. " + s);*/
 		
 		return tds;
 	}

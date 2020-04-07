@@ -37,7 +37,7 @@ public class Generateur {
 		builder.appendLine("CMOVE(pile, SP)");
 		builder.appendLine("BR(debut)");
 		builder.appendLine(""); // SAUT DE LIGNE
-		builder.appendLine(genererData());
+		builder.append(genererData());
 		builder.appendLine(genererCode(noeud));
 		builder.appendLine("debut:");
 		builder.appendLineTab("CALL(main)");
@@ -89,7 +89,7 @@ public class Generateur {
 	}
 	
 	/**
-	 * Génère tous les blocs d'une fonction
+	 * Génère toutes les instructions d'une fonction
 	 * @param noeud
 	 * 		Arbre abstrait.
 	 * @return
@@ -97,12 +97,15 @@ public class Generateur {
 	 */
 	private String genererFonction(Fonction fonction) {
 		StringBuilderPlus builder = new StringBuilderPlus();
+		builder.appendLine("");
 		builder.appendLine(String.format("%s:", fonction.getValeur()));
 		builder.appendLineTab("PUSH(LP)");
 		builder.appendLineTab("PUSH(BP)");
 		builder.appendLineTab("MOVE(SP, BP)");
 		builder.appendLineTab(String.format("ALLOCATE(%d)", tds.rechercher((String) fonction.getValeur(), SCOPE_GLOBAL).getNbLoc()));
-		builder.append(genererBloc((Bloc) fonction.getFils().get(0)));
+		for (Noeud n: fonction.getFils()) {
+			builder.append(genererInstruction(n));
+		}
 		builder.appendLineTab("MOVE(BP, SP)");
 		builder.appendLineTab("POP(BP)");
 		builder.appendLineTab("POP(LP)");
@@ -183,9 +186,9 @@ public class Generateur {
 						break;
 					case CAT_LOCAL:
 						builder.appendLineTab("POP(r0)");
-						builder.appendLineTab(String.format("PUTFRAME(%s, r0)", ((NoeudObj) noeud).getValeur()));
+						builder.appendLineTab(String.format("PUTFRAME(r0, %d)", (symbole.getRang() + 1) * 4));
 					case CAT_PARAMETRE:
-						builder.appendLineTab(String.format("GETFRAME(%s, r0)", - (symbole.getRang() + 2) * 4));
+						builder.appendLineTab(String.format("GETFRAME(%d, r0)", - (symbole.getRang() + 2) * 4));
 						builder.appendLineTab("PUSH(r0)");
 						break;
 				}		
@@ -386,7 +389,7 @@ public class Generateur {
 			builder.appendLineTab("CMOVE(r1, r0)");
 			builder.appendLineTab("PUSH(r0)");
 		}
-		builder.appendLineTab(String.format("CALL(%s, %d)", appel.getValeur(), symbole.getNbParam()));
+		builder.appendLineTab(String.format("CALL(%s, %d)", ((Fonction) appel.getValeur()).getValeur(), symbole.getNbParam()));
 		return builder.toString();
 	}
 	
