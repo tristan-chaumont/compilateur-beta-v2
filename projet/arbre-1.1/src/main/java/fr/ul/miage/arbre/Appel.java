@@ -52,7 +52,7 @@ public class Appel extends NoeudObj {
 	public String commentaire() {
 		StringBuilder builder = new StringBuilder();
 		String parametres = getFils().stream().map(Noeud::commentaire).collect(Collectors.joining(", "));
-		builder.append(String.format("%s(%s)", getValeur(), parametres));
+		builder.append(String.format("%s(%s)", ((Fonction) getValeur()).getValeur(), parametres));
 		return builder.toString();
 	}
 }

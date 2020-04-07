@@ -16,13 +16,11 @@ public class Main {
 		generateur = new Generateur(tds);
 		//System.out.println(generateur.genererProgramme(arbre));
 		
-		
 		// ETAPE 2
 		arbre = etape.genererArbreEtape2();
 		tds = etape.genererTdsEtape2();
 		generateur = new Generateur(tds);
 		//System.out.println(generateur.genererProgramme(arbre));
-		
 		
 		// ETAPE 3
 		arbre = etape.genererArbreEtape3();
