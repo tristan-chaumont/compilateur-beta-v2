@@ -379,7 +379,7 @@ public class Generateur {
 		builder.appendLineTab("POP(r0)");
 		builder.appendLineTab(String.format("BF(r0, ftantque%d)", numeroTq));
 		builder.append(genererBloc(tantque.getBloc()));
-		builder.appendLineTab(String.format("JMP(tantque%d)", numeroTq));
+		builder.appendLineTab(String.format("BR(tantque%d)", numeroTq));
 		builder.appendLine(String.format("ftantque%d:", numeroTq));
 		return builder.toString();
 	}
