@@ -60,7 +60,7 @@ public class Generateur {
 			int init = 0;
 			List<Symbole> listeVariables = variable.getValue();
 			for (Symbole symbole: listeVariables) {
-				if (symbole.getType().equals(TYPE_ENTIER) && symbole.getScope().equals(SCOPE_GLOBAL)) {
+				if (symbole.getType().equals(TYPE_ENTIER) && symbole.getScope().equals(SCOPE_GLOBAL) && !symbole.getCat().equals(CAT_FONCTION)) {
 					if (symbole.getProp().containsKey(PROP_VALEUR)) {
 						init = symbole.getValeur();
 					}
@@ -419,7 +419,7 @@ public class Generateur {
 		builder.appendLineTab("POP(r0)");
 		Fonction fonction = (Fonction) retour.getValeur();
 		Symbole symbole = tds.rechercher((String) fonction.getValeur(), SCOPE_GLOBAL);
-		builder.appendLine(String.format("PUTFRAME(r0, %d)", (3 + symbole.getNbParam()) * (-4)));
+		builder.appendLineTab(String.format("PUTFRAME(r0, %d)", (3 + symbole.getNbParam()) * (-4)));
 		return builder.toString();
 	}
 }
