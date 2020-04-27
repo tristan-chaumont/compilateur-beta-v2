@@ -300,7 +300,7 @@ public class Generateur {
 			case INFE:
 				//builder.appendLineTab(String.format("| %s", noeud.commentaire())); // COMMENTAIRE
 				builder.append(genererExpression(noeud.getFils().get(0)));
-				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPLE(r1, r2, r3)");
@@ -309,7 +309,7 @@ public class Generateur {
 			case EG:
 				//builder.appendLineTab(String.format("| %s", noeud.commentaire())); // COMMENTAIRE
 				builder.append(genererExpression(noeud.getFils().get(0)));
-				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPEQ(r1, r2, r3)");
@@ -318,7 +318,7 @@ public class Generateur {
 			case DIF:
 				//builder.appendLineTab(String.format("| %s", noeud.commentaire())); // COMMENTAIRE
 				builder.append(genererExpression(noeud.getFils().get(0)));
-				builder.append(genererExpression(noeud.getFils().get(0)));
+				builder.append(genererExpression(noeud.getFils().get(1)));
 				builder.appendLineTab("POP(r2)");
 				builder.appendLineTab("POP(r1)");
 				builder.appendLineTab("CMPEQ(r1, r2, r3)");
